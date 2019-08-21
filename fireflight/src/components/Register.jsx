@@ -3,6 +3,7 @@ import { Link, Redirect } from "react-router-dom";
 import FireContext from "../context/contextProvider";
 import axios from "axios";
 
+import AddressForm from "./AddressForm"
 import useInput from "../utils/useInput";
 
 function Register() {
