@@ -9,11 +9,11 @@ import Dashboard from "./components/Dashboard";
 import AuthForms from "./components/AuthForms/AuthForms";
 
 import Map from "./components/Map";
-import Address from './components/Address';
-import AddressContext from './context/AddressContext'
+import Address from "./components/Address";
+import AddressContext from "./context/AddressContext";
 import styled from "styled-components";
 
-import { FireContext } from "./context/contextProvider";
+import { GlobalContext } from "./context/contextProvider";
 
 // AUTH FORM MODAL:
 // Will refactor everything in regards to the auth form modal into one single component to clean up APP.js
@@ -25,16 +25,16 @@ function App() {
   const [loginFormStatus, setLoginFormStatus] = useState(true);
   const [registerFormStatus, setRegisterFormStatus] = useState(false);
 
-  const global =useContext(FireContext)
+  const global = useContext(GlobalContext);
 
   useEffect(() => {
     //getLogin gets login information upon page load here;
-    const getLogin=async ()=>{
-      let user = await global.state.remote.self()
-      global.setUser(user.username)
-    }
-    getLogin()
-  },[]);//[] here means this will only run once
+    const getLogin = async () => {
+      let user = await global.state.remote.self();
+      global.setUser(user.username);
+    };
+    getLogin();
+  }, []); //[] here means this will only run once
 
   return (
     <AppWrapper>
@@ -60,8 +60,6 @@ function App() {
         <Route path="/address" component={Address} />
         <Route path="/map" component={Map} />
       </AddressContext>
-    
-
     </AppWrapper>
   );
 }

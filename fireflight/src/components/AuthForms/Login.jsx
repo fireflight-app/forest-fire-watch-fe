@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from "react";
-import { FireContext } from "../../context/contextProvider";
+import { GlobalContext } from "../../context/contextProvider";
 import axios from "axios";
 import { Link, Redirect } from "react-router-dom";
 import useInput from "../../utils/useInput";
@@ -19,22 +19,18 @@ function Login({ toggle }) {
   const [errorStatus, setErrorStatus] = useState(false);
   const [errorText, setErrorText] = useState({});
   //get global context (think redux store)
-  const context = useContext(FireContext);
-
-  //view context once / example of how to use
-  useEffect(() => {
-    console.log(context);
-  }, []);
+  const context = useContext(GlobalContext);
 
   function handleSubmit(e) {
     e.preventDefault();
     setLoading(true);
     const credentials = { username, password };
 
-    setErrorStatus(false)
-    setErrorText("")
+    setErrorStatus(false);
+    setErrorText("");
 
-    context.state.remote.login(credentials)
+    context.state.remote
+      .login(credentials)
       .then(res => {
         setUsername("");
         setPassword("");
@@ -47,9 +43,7 @@ function Login({ toggle }) {
         setLoading(false);
       });
   }
-  // if (localStorage.getItem("token")) {
-  //   return <Redirect to="/" />;
-  // } else {
+
   return (
     <LoginPageContainer>
       <LoginContainer>
@@ -62,11 +56,7 @@ function Login({ toggle }) {
             onChange={handleUsername}
             placeholder="Username"
           />
-          {errorStatus ? (
-            <ErrorText>{errorText}</ErrorText>
-          ) : (
-            <ErrorText />
-          )}
+          {errorStatus ? <ErrorText>{errorText}</ErrorText> : <ErrorText />}
 
           <FormInput
             type="password"

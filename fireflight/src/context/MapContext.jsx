@@ -64,9 +64,6 @@ export const MapProvider = props => {
         `https://api.mapbox.com/geocoding/v5/mapbox.places/${state.userAddress}.json?access_token=${token}`
       )
       .then(res => {
-        console.log(res.data);
-        console.log(res.data.features[0].center[0]);
-        console.log(res.data.features[0].center[1]);
         dispatch({
           type: SET_COORDS,
           payload: {
@@ -79,11 +76,9 @@ export const MapProvider = props => {
   };
 
   const setAddress = () => {
-    console.log("Setting address...");
     axiosWithAuth()
       .get(`locations`)
       .then(res => {
-        console.log(res);
         dispatch({
           type: SET_ADDRESS,
           payload: res.data[0].address

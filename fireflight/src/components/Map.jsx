@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import ReactMapGL, { Marker, Popup } from "react-map-gl";
 
 import { MapContext } from "../context/MapContext";
+import { GlobalContext } from "../context/contextProvider";
 
 import fireIcon from "../images/fireIcon.png";
 import locationIcon from "../images/locationIcon.png";
@@ -10,9 +11,9 @@ import axiosWithAuth from "../utils/axiosWithAuth";
 import axios from "axios";
 
 const Map = () => {
-  const { state, setViewport, setAddress, setCoordinates } = useContext(
-    MapContext
-  );
+  const { state, setViewport, setAddress } = useContext(MapContext);
+
+  const { setCoordinates } = useContext(GlobalContext);
   const [userCoords, setUserCoords] = useState();
 
   console.log(state);

@@ -1,10 +1,10 @@
 import React, { useContext } from "react";
 
 import Modal from "./Modal/Modal";
-import { FireContext } from "../context/contextProvider";
+import { GlobalContext } from "../context/contextProvider";
 
 const AlertModal = () => {
-  const { state, setFires, setUserLocations } = useContext(FireContext);
+  const { state, setFires, setUserLocations } = useContext(GlobalContext);
   const { fireInfo, userLocations } = state;
   console.log(userLocations);
   const updateLastAlert = () => {};

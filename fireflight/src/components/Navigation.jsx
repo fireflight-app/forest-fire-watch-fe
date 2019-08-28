@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { FireContext } from "../context/contextProvider";
+import { GlobalContext } from "../context/contextProvider";
 import { withRouter, NavLink, Link } from "react-router-dom";
 import styled from "styled-components";
 
@@ -8,12 +8,12 @@ function Navigation({
   toggleLoginStatus,
   toggleRegisterStatus
 }) {
-  const data = useContext(FireContext);
+  const data = useContext(GlobalContext);
   const [menuToggle, setMenuToggle] = useState(false);
 
-  const logout=e=>{
-    data.state.remote.logout()
-  }
+  const logout = e => {
+    data.state.remote.logout();
+  };
 
   return (
     <NavContainer>
@@ -30,7 +30,7 @@ function Navigation({
               </NavLink>
             </MenuItem>
 
-            {localStorage.getItem('token') == null && (
+            {localStorage.getItem("token") == null && (
               <React.Fragment>
                 <MenuItem
                   onClick={() => {
@@ -52,7 +52,7 @@ function Navigation({
                 </MenuItem>
               </React.Fragment>
             )}
-            {localStorage.getItem('token') != null && (
+            {localStorage.getItem("token") != null && (
               <React.Fragment>
                 <MenuItem>
                   <NavLink to="/update" activeClassName="current">
