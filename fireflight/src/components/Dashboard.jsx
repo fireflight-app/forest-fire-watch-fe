@@ -1,23 +1,25 @@
-import React, {useState} from "react";
+import React from "react";
 import styled from "styled-components";
+import { MapProvider } from "../context/MapContext";
 
-import AlertModal from "./AlertModal"
+import AlertModal from "./AlertModal";
+
 import Map from "./Map";
 
 const Dashboard = () => {
-  const [alert, setAlert] = useState(false)
-
   return (
     <DashboardWrapper>
       <Heading>Dashboard</Heading>
-      <AlertModal/>
+      <AlertModal />
       <ContentContainer>
         <AlertsDiv>
           <DivHeading>View Todays Alerts</DivHeading>
         </AlertsDiv>
         <MapDiv>
           <DivHeading>Active Fires</DivHeading>
-          <Map />
+          <MapProvider>
+            <Map />
+          </MapProvider>
         </MapDiv>
         <ProfileDiv>
           <DivHeading>My Profile</DivHeading>

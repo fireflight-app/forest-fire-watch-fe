@@ -1,5 +1,4 @@
 import React, { useReducer, createContext } from "react";
-import axios from "axios";
 // import FireContext from "./contextProvider";
 import connector from "../helpers/connects";
 import { FireContext, defaultValues } from "./contextProvider";
@@ -40,7 +39,7 @@ const globalReducer = (state, action) => {
         ...state,
         fireInfo: [...state.fireInfo, action.payload]
       };
-      //To Ken from Shannon: should add all locations of single user to the userLocations array
+    //To Ken from Shannon: should add all locations of single user to the userLocations array
     case GET_USER_LOCATIONS_SUCCESS:
       return {
         ...state,
@@ -74,7 +73,12 @@ function GlobalContext(props) {
   // SET HOOKS EXPLANATION:
   // The concept of the set functions is exactly the same as in a regular hook. We use the set function to set the data inside the state. These functions (think redux actions) use dispatch to pass the newly set data into the reducer. State is then updated properly.
 
-  const setUser = newUser => {};
+  const setUser = newUser => {
+    dispatch({
+      type: SET_NAME,
+      payload: newUser
+    });
+  };
   const setToken = newToken => {};
 
   const setLocation = newLocation => {};
@@ -98,7 +102,7 @@ function GlobalContext(props) {
         dispatch({ type: GET_FIRES_ERROR, payload: err });
       });
   };
-//To Ken from Shannon: This gets an array of all locations for the signed in user.
+  //To Ken from Shannon: This gets an array of all locations for the signed in user.
   const setUserLocations = () => {
     dispatch({ type: GET_USER_LOCATIONS_START });
     axios

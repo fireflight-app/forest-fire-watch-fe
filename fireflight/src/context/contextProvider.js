@@ -1,19 +1,20 @@
 import React from "react";
+import remote from "../helpers/connects";
 
 const defaultValues = {
   user: null,
   token: null,
   location: "",
-  remote: {},
+  remote: remote,
   setUser: newUser => {},
   setToken: newToken => {},
   setLocation: newLocation => {},
   name: "Mike",
   setFires: location => {},
   fireInfo: [],
-  userLocations:[],
-  setUserLocations: ()=>{},
-  setLastAlert: ()=> {}
+  userLocations: [],
+  setUserLocations: () => {},
+  setLastAlert: () => {}
 };
 
 //set default state for autocomplete
