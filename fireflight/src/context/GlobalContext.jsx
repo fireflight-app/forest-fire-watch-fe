@@ -12,7 +12,10 @@ import {
   GET_FIRES_ERROR,
   GET_USER_LOCATIONS_START,
   GET_USER_LOCATIONS_SUCCESS,
-  GET_USER_LOCATIONS_ERROR
+  GET_USER_LOCATIONS_ERROR,
+  SET_LAST_ALERT_START,
+  SET_LAST_ALERT_SUCCESS,
+  SET_LAST_ALERT_ERROR
 } from "./types";
 
 // REDUCER EXPLANATION:
@@ -32,15 +35,17 @@ const globalReducer = (state, action) => {
         name: action.payload
       };
     case GET_FIRES_SUCCESS:
+      //To Ken from Shannon: should add the fire coordinates and alert boolean from the DS (setFires function)to the fireInfo array
       return {
         ...state,
-        fireInfo: action.payload
+        fireInfo: [...state.fireInfo, action.payload]
       };
-      case GET_USER_LOCATIONS_SUCCESS:
-        return {
-          ...state,
-          userLocations: action.payload
-        }
+      //To Ken from Shannon: should add all locations of single user to the userLocations array
+    case GET_USER_LOCATIONS_SUCCESS:
+      return {
+        ...state,
+        userLocations: action.payload
+      };
     default:
       return {
         ...state
@@ -53,7 +58,7 @@ const globalReducer = (state, action) => {
 
 const baseDeployedURL = "https://fireflight-lambda.herokuapp.com";
 const baseLocalURL = "http://localhost:5000";
-const DSbaseURL="https://fire-data-api.herokuapp.com"
+const DSbaseURL = "https://fire-data-api.herokuapp.com";
 
 function GlobalContext(props) {
   //   const [user, setUser] = useState(null);
@@ -74,12 +79,13 @@ function GlobalContext(props) {
 
   const setLocation = newLocation => {};
 
-  //ex location:
+  //example location:
   //  {
   //    "user_coords" : [-122.347204, 47.653278],
   //    "distance" : 1000
   // }
-  const setFires = location => dispatch => {
+  //To Ken from Shannon: This is the API call to the DS backend, currently not working because of the CORS issue
+  const setFires = location => {
     dispatch({ type: GET_FIRES_START });
     console.log("GET_FIRES_START");
     axios
@@ -92,18 +98,33 @@ function GlobalContext(props) {
         dispatch({ type: GET_FIRES_ERROR, payload: err });
       });
   };
+//To Ken from Shannon: This gets an array of all locations for the signed in user.
+  const setUserLocations = () => {
+    dispatch({ type: GET_USER_LOCATIONS_START });
+    axios
+      .get(`${baseLocalURL}/api/locations/`)
+      .then(res => {
+        dispatch({ type: GET_USER_LOCATIONS_SUCCESS, payload: res.data });
+      })
+      .catch(err => {
+        console.log(err);
+        dispatch({ type: GET_USER_LOCATIONS_ERROR, payload: err });
+      });
+  };
 
-  const setUserLocations = () => dispatch=> {
-    dispatch({type: GET_USER_LOCATIONS_START})
-    axios.get(`${baseLocalURL}/api/locations/`)
-    .then(res=> {
-      dispatch({type: GET_USER_LOCATIONS_SUCCESS, payload: res.data})
-    })
-    .catch(err=> {
-      console.log(err)
-      dispatch({type: GET_USER_LOCATIONS_ERROR, payload: err})
-    })
-  }
+  const setLastAlert = mostRecentAlert => {
+    dispatch({ type: SET_LAST_ALERT_START });
+    axios
+      .put(`${baseLocalURL}/api/locations/`, mostRecentAlert)
+      .then(res => {
+        console.log(res.data);
+        dispatch({ type: SET_LAST_ALERT_SUCCESS, payload: res.data });
+      })
+      .catch(err => {
+        console.log(err);
+        dispatch({ type: SET_LAST_ALERT_ERROR, payload: err });
+      });
+  };
 
   //structure
   /**
@@ -153,7 +174,8 @@ function GlobalContext(props) {
         setToken,
         setLocation,
         setFires,
-        setUserLocations
+        setUserLocations,
+        setLastAlert
       }}
     >
       {props.children}

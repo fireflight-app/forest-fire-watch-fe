@@ -12,7 +12,8 @@ const defaultValues = {
   setFires: location => {},
   fireInfo: [],
   userLocations:[],
-  setUserLocations:[]
+  setUserLocations: ()=>{},
+  setLastAlert: ()=> {}
 };
 
 //set default state for autocomplete

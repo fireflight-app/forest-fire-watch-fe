@@ -10,6 +10,7 @@ const Dashboard = () => {
   return (
     <DashboardWrapper>
       <Heading>Dashboard</Heading>
+      <AlertModal/>
       <ContentContainer>
         <AlertsDiv>
           <DivHeading>View Todays Alerts</DivHeading>
