@@ -6,10 +6,7 @@ const defaultValues = {
   remote: remote,
   fireInfo: [],
   userLocations: [],
-  userCoordinates: {},
-  setFires: location => {},
-  setUserLocations: () => {},
-  setLastAlert: () => {}
+  userCoordinates: {}
 };
 
 //set default state for autocomplete

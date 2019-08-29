@@ -11,12 +11,9 @@ import axiosWithAuth from "../utils/axiosWithAuth";
 import axios from "axios";
 
 const Map = () => {
-  const { mapState, setViewport, setAddress } = useContext(MapContext);
-
-  const { globalState, setCoordinates } = useContext(GlobalContext);
-
-  console.log(mapState);
-  console.log(globalState);
+  const { mapState, setViewport, setAddress, setCoordinates } = useContext(
+    MapContext
+  );
 
   // hook for current selected fire to display popup on the map
   const [selectedFire, setSelectedFire] = useState(null);
@@ -64,14 +61,11 @@ const Map = () => {
 
   let userMarker;
 
-  if (
-    globalState.userCoordinates.latitude &&
-    globalState.userCoordinates.longitude
-  ) {
+  if (mapState.userCoordinates.latitude && mapState.userCoordinates.longitude) {
     userMarker = (
       <Marker
-        latitude={globalState.userCoordinates.latitude}
-        longitude={globalState.userCoordinates.longitude}
+        latitude={mapState.userCoordinates.latitude}
+        longitude={mapState.userCoordinates.longitude}
       >
         <img src={locationIcon} height="35" width="20" style={{ zIndex: -1 }} />
       </Marker>
@@ -87,7 +81,6 @@ const Map = () => {
           setViewport(viewport);
         }}
       >
-        Marker Issue to be fixed
         {userMarker};
         {fireData.map(fire => {
           return (

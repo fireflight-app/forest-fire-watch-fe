@@ -1,4 +1,4 @@
-import React, { useReducer, createContext } from "react";
+import React, { useReducer } from "react";
 import axiosWithAuth from "../utils/axiosWithAuth";
 import axios from "axios";
 import connector from "../helpers/connects";
@@ -71,10 +71,10 @@ export const GlobalProvider = props => {
     });
   };
 
-  const setCoordinates = () => {
+  const setGlobalCoordinates = () => {
     axios
       .get(
-        `https://api.mapbox.com/geocoding/v5/mapbox.places/${globalState.userAddress}.json?access_token=${token}`
+        `https://api.mapbox.com/geocoding/v5/mapbox.places/${globalState.userLocations[0].address}.json?access_token=${token}`
       )
       .then(res => {
         dispatch({
@@ -113,6 +113,19 @@ export const GlobalProvider = props => {
       .get("/locations")
       .then(res => {
         dispatch({ type: GET_USER_LOCATIONS_SUCCESS, payload: res.data });
+        axios
+          .get(
+            `https://api.mapbox.com/geocoding/v5/mapbox.places/${globalState.userLocations[0].address}.json?access_token=${token}`
+          )
+          .then(res => {
+            dispatch({
+              type: SET_COORDS,
+              payload: {
+                latitude: res.data.features[0].center[1],
+                longitude: res.data.features[0].center[0]
+              }
+            });
+          });
       })
       .catch(err => {
         console.log(err);
@@ -143,7 +156,7 @@ export const GlobalProvider = props => {
         setFires,
         setUserLocations,
         setLastAlert,
-        setCoordinates
+        setGlobalCoordinates
       }}
     >
       {props.children}
