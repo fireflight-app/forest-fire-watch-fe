@@ -40,6 +40,9 @@ function Login({ toggle }) {
       .catch(err => {
         setErrorText("Username or Password Invalid");
         setErrorStatus(true);
+
+        setErrorText(err.response.data);
+        console.log("err", err)
         setLoading(false);
       });
   }

@@ -8,7 +8,7 @@ import Dashboard from "./components/Dashboard";
 
 import AuthForms from "./components/AuthForms/AuthForms";
 
-import Map from "./components/Map";
+// import Map from "./components/Map";
 import Address from "./components/Address";
 import AddressContext from "./context/AddressContext";
 import styled from "styled-components";
@@ -58,7 +58,7 @@ function App() {
       <Route path="/dashboard" component={Dashboard} />
       <AddressContext>
         <Route path="/address" component={Address} />
-        <Route path="/map" component={Map} />
+        {/* <Route path="/map" component={Map} /> */}
       </AddressContext>
     </AppWrapper>
   );

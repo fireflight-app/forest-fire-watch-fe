@@ -4,7 +4,7 @@ import { MapProvider } from "../context/MapContext";
 
 import AlertModal from "./AlertModal";
 
-import Map from "./Map";
+// import Map from "./Map";
 
 const Dashboard = () => {
   const [showAlerts, setShowAlerts] = useState(false);
@@ -18,12 +18,12 @@ const Dashboard = () => {
         <AlertsDiv onClick={() => setShowAlerts(true)}>
           <DivHeading>View Todays Alerts</DivHeading>
         </AlertsDiv>
-        <MapDiv>
+        {/* <MapDiv>
           <DivHeading>Active Fires</DivHeading>
           <MapProvider>
             <Map />
           </MapProvider>
-        </MapDiv>
+        </MapDiv> */}
         <ProfileDiv>
           <DivHeading>My Profile</DivHeading>
         </ProfileDiv>

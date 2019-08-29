@@ -7,16 +7,11 @@ import { GlobalContext, defaultValues } from "./contextProvider";
 import {
   SET_LOCATION,
   SET_NAME,
-  GET_FIRES_START,
-  GET_FIRES_SUCCESS,
-  GET_FIRES_ERROR,
-  GET_USER_LOCATIONS_START,
-  GET_USER_LOCATIONS_SUCCESS,
-  GET_USER_LOCATIONS_ERROR,
-  SET_LAST_ALERT_START,
-  SET_LAST_ALERT_SUCCESS,
-  SET_LAST_ALERT_ERROR,
-  SET_COORDS
+  SET_FIRES,
+  SET_USER_LOCATIONS,
+  SET_LAST_ALERT,
+  SET_COORDS,
+  SET_ALL_COORDS
 } from "./types";
 
 const DSbaseURL = "https://fire-data-api.herokuapp.com";
@@ -37,23 +32,34 @@ const globalReducer = (state, action) => {
         ...state,
         name: action.payload
       };
-    case GET_FIRES_SUCCESS:
+    case SET_FIRES:
       //To Ken from Shannon: should add the fire coordinates and alert boolean from the DS (setFires function)to the fireInfo array
       return {
         ...state,
         fireInfo: [...state.fireInfo, action.payload]
       };
-    //To Ken from Shannon: should add all locations of single user to the userLocations array
-    case GET_USER_LOCATIONS_SUCCESS:
+    case SET_USER_LOCATIONS:
       return {
         ...state,
         userLocations: action.payload
       };
-    case SET_COORDS:
-      return {
-        ...state,
-        userCoordinates: action.payload
-      };
+    case SET_ALL_COORDS:
+      console.log("payload", action.payload);
+      console.log("payload len", action.payload.length);
+
+      const userLocWithCoords = state.userLocations;
+      action.payload.forEach((location, index)=> {
+        console.log("FOR EACH", action.payload[index])
+      })
+      console.log("userLocWithCoords",userLocWithCoords)
+      for (let i = 0; i < action.payload.length; i++){
+        console.log("I",action.payload[i])
+        // userLocWithCoords[i]
+      }
+        return {
+          ...state,
+          userAllCoordinates: [...state.userAllCoordinates, action.payload]
+        };
     default:
       return {
         ...state
@@ -62,7 +68,7 @@ const globalReducer = (state, action) => {
 };
 
 export const GlobalProvider = props => {
-  const [globalState, dispatch] = useReducer(globalReducer, defaultValues);
+  const [globalState, userLocWithCoordsdispatch] = useReducer(globalReducer, defaultValues);
 
   const setUser = newUser => {
     dispatch({
@@ -76,58 +82,71 @@ export const GlobalProvider = props => {
   //    "user_coords" : [-122.347204, 47.653278],
   //    "distance" : 1000
   // }
-  //To Ken from Shannon: This is the API call to the DS backend, currently not working because of the CORS issue
   const setFires = location => {
-    dispatch({ type: GET_FIRES_START });
-    console.log("GET_FIRES_START");
     axios
       .post(`${DSbaseURL}/check_fires`, location)
       .then(res => {
-        dispatch({ type: GET_FIRES_SUCCESS, payload: res.data });
+        dispatch({ type: SET_FIRES, payload: res.data });
       })
       .catch(err => {
         console.log(err);
-        dispatch({ type: GET_FIRES_ERROR, payload: err });
-      });
-  };
-  //To Ken from Shannon: This gets an array of all locations for the signed in user.
-  const setUserLocations = () => {
-    dispatch({ type: GET_USER_LOCATIONS_START });
-    axiosWithAuth()
-      .get("/locations")
-      .then(res => {
-        dispatch({ type: GET_USER_LOCATIONS_SUCCESS, payload: res.data });
-        axios
-          .get(
-            `https://api.mapbox.com/geocoding/v5/mapbox.places/${globalState.userLocations[0].address}.json?access_token=${token}`
-          )
-          .then(res => {
-            dispatch({
-              type: SET_COORDS,
-              payload: {
-                latitude: res.data.features[0].center[1],
-                longitude: res.data.features[0].center[0]
-              }
-            });
-          });
-      })
-      .catch(err => {
-        console.log(err);
-        dispatch({ type: GET_USER_LOCATIONS_ERROR, payload: err });
       });
   };
 
+  const setUserLocations = () => {
+    axiosWithAuth()
+      .get("/locations")
+      .then(res => {
+        dispatch({ type: SET_USER_LOCATIONS, payload: res.data });
+        // res.data.map(location => {
+        //   axios
+        //     .get(
+        //       `https://api.mapbox.com/geocoding/v5/mapbox.places/${location.address}.json?access_token=${token}`
+        //     )
+        //     .then(res => {
+        //       dispatch({
+        //         type: SET_ALL_COORDS,
+        //         payload: [
+        //           res.data.features[0].center[1],
+        //           res.data.features[0].center[0]
+        //         ]
+        //       });
+        //     });
+        // });
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+
+  const setAllCoordinates = locations => {
+    let coordinates = [];
+    locations.forEach(location => {
+      axios
+        .get(
+          `https://api.mapbox.com/geocoding/v5/mapbox.places/${location.address}.json?access_token=${token}`
+        )
+        .then(res => {
+          const currentCoords = [
+            res.data.features[0].center[1],
+            res.data.features[0].center[0]
+          ];
+          coordinates.push(currentCoords);
+        });
+    });
+    console.log("Coordinates", coordinates)
+    dispatch({ type: SET_ALL_COORDS, payload: coordinates });
+  };
+
   const setLastAlert = mostRecentAlert => {
-    dispatch({ type: SET_LAST_ALERT_START });
     axios
       .put("locations", mostRecentAlert)
       .then(res => {
         console.log(res.data);
-        dispatch({ type: SET_LAST_ALERT_SUCCESS, payload: res.data });
+        dispatch({ type: SET_LAST_ALERT, payload: res.data });
       })
       .catch(err => {
         console.log(err);
-        dispatch({ type: SET_LAST_ALERT_ERROR, payload: err });
       });
   };
 
@@ -139,6 +158,7 @@ export const GlobalProvider = props => {
         setUser,
         setFires,
         setUserLocations,
+        setAllCoordinates,
         setLastAlert
       }}
     >
