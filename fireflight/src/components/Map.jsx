@@ -11,12 +11,12 @@ import axiosWithAuth from "../utils/axiosWithAuth";
 import axios from "axios";
 
 const Map = () => {
-  const { state, setViewport, setAddress } = useContext(MapContext);
+  const { mapState, setViewport, setAddress } = useContext(MapContext);
 
-  const { setCoordinates } = useContext(GlobalContext);
-  const [userCoords, setUserCoords] = useState();
+  const { globalState, setCoordinates } = useContext(GlobalContext);
 
-  console.log(state);
+  console.log(mapState);
+  console.log(globalState);
 
   // hook for current selected fire to display popup on the map
   const [selectedFire, setSelectedFire] = useState(null);
@@ -57,19 +57,21 @@ const Map = () => {
   }, []);
 
   useEffect(() => {
-    if (state.userAddress !== "") {
+    if (mapState.userAddress !== "") {
       setCoordinates();
-      setUserCoords({ ...state.userCoordinates });
     }
-  }, [state.userAddress]);
+  }, [mapState.userAddress]);
 
   let userMarker;
 
-  if (state.userCoordinates.latitude && state.userCoordinates.longitude) {
+  if (
+    globalState.userCoordinates.latitude &&
+    globalState.userCoordinates.longitude
+  ) {
     userMarker = (
       <Marker
-        latitude={state.userCoordinates.latitude}
-        longitude={state.userCoordinates.longitude}
+        latitude={globalState.userCoordinates.latitude}
+        longitude={globalState.userCoordinates.longitude}
       >
         <img src={locationIcon} height="35" width="20" style={{ zIndex: -1 }} />
       </Marker>
@@ -79,7 +81,7 @@ const Map = () => {
   return (
     <div>
       <ReactMapGL
-        {...state.viewport}
+        {...mapState.viewport}
         mapboxApiAccessToken={token}
         onViewportChange={viewport => {
           setViewport(viewport);

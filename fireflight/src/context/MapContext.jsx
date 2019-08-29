@@ -35,7 +35,7 @@ const mapReducer = (state, action) => {
 export const MapContext = createContext();
 
 export const MapProvider = props => {
-  const [state, dispatch] = useReducer(mapReducer, {
+  const [mapState, dispatch] = useReducer(mapReducer, {
     viewport: {
       width: "100%",
       height: window.innerWidth < 900 ? 350 : 500,
@@ -61,13 +61,13 @@ export const MapProvider = props => {
   const setCoordinates = () => {
     axios
       .get(
-        `https://api.mapbox.com/geocoding/v5/mapbox.places/${state.userAddress}.json?access_token=${token}`
+        `https://api.mapbox.com/geocoding/v5/mapbox.places/${mapState.userAddress}.json?access_token=${token}`
       )
       .then(res => {
         dispatch({
           type: SET_COORDS,
           payload: {
-            ...state.userCoordinates,
+            ...mapState.userCoordinates,
             latitude: res.data.features[0].center[1],
             longitude: res.data.features[0].center[0]
           }
@@ -91,7 +91,7 @@ export const MapProvider = props => {
 
   return (
     <MapContext.Provider
-      value={{ state, dispatch, setViewport, setAddress, setCoordinates }}
+      value={{ mapState, dispatch, setViewport, setAddress, setCoordinates }}
     >
       {props.children}
     </MapContext.Provider>

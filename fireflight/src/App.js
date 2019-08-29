@@ -30,7 +30,7 @@ function App() {
   useEffect(() => {
     //getLogin gets login information upon page load here;
     const getLogin = async () => {
-      let user = await global.state.remote.self();
+      let user = await global.globalState.remote.self();
       global.setUser(user.username);
     };
     getLogin();

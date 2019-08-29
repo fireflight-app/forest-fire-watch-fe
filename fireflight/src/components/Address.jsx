@@ -28,7 +28,7 @@ function Address(props) {
     if (e) e.preventDefault();
     address.fetchAddress().then(() => {
       console.log("render time");
-      console.log(address.state.address);
+      console.log(address.addressState.address);
     });
   };
 
@@ -128,7 +128,7 @@ function Address(props) {
       setStreet("");
       setId(null);
     } else {
-      let temp = address.state.addresses.filter(i => {
+      let temp = address.addressState.addresses.filter(i => {
         return i.id == e.target.value;
       })[0];
       setId(temp.id);
@@ -171,7 +171,7 @@ function Address(props) {
             </> */}
       <FormSelect onChange={edit}>
         <option value={-1}>Add an Address</option>
-        {address.state.addresses.map(i => (
+        {address.addressState.addresses.map(i => (
           <option value={i.id} key={i.id}>
             {i.address}
           </option>

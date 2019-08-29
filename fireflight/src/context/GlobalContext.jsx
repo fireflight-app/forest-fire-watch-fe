@@ -62,7 +62,7 @@ const globalReducer = (state, action) => {
 };
 
 export const GlobalProvider = props => {
-  const [state, dispatch] = useReducer(globalReducer, defaultValues);
+  const [globalState, dispatch] = useReducer(globalReducer, defaultValues);
 
   const setUser = newUser => {
     dispatch({
@@ -74,7 +74,7 @@ export const GlobalProvider = props => {
   const setCoordinates = () => {
     axios
       .get(
-        `https://api.mapbox.com/geocoding/v5/mapbox.places/${state.userAddress}.json?access_token=${token}`
+        `https://api.mapbox.com/geocoding/v5/mapbox.places/${globalState.userAddress}.json?access_token=${token}`
       )
       .then(res => {
         dispatch({
@@ -137,7 +137,7 @@ export const GlobalProvider = props => {
   return (
     <GlobalContext.Provider
       value={{
-        state,
+        globalState,
         dispatch,
         setUser,
         setFires,

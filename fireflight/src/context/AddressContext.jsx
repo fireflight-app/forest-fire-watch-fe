@@ -93,7 +93,7 @@ function AddressContextProvider(props) {
     }
   };
 
-  const [state, dispatch] = useReducer(reducers, defaultState);
+  const [addressState, dispatch] = useReducer(reducers, defaultState);
 
   const updateAddresses = async payload => {
     dispatch({
@@ -103,7 +103,7 @@ function AddressContextProvider(props) {
   };
   const reset = async () => {
     clear();
-    global.state.remote.fetchLocations().then(data => {
+    global.globalState.remote.fetchLocations().then(data => {
       updateAddresses(data.reason);
     });
   };
@@ -163,7 +163,7 @@ function AddressContextProvider(props) {
     updateAddress,
     clear,
     reset,
-    state
+    addressState
   };
 
   return (

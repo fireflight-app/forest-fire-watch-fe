@@ -4,8 +4,8 @@ import Modal from "./Modal/Modal";
 import { GlobalContext } from "../context/contextProvider";
 
 const AlertModal = () => {
-  const { state, setFires, setUserLocations } = useContext(GlobalContext);
-  const { fireInfo, userLocations } = state;
+  const { globalState, setFires, setUserLocations } = useContext(GlobalContext);
+  const { fireInfo, userLocations } = globalState;
   console.log(userLocations);
   const updateLastAlert = () => {};
 
@@ -27,7 +27,7 @@ const AlertModal = () => {
   };
 
   return (
-    <Modal show={true}>
+    <Modal show={false}>
       {userLocations.map(location => {
         return <p key={location.id}>{location.address}</p>;
       })}
