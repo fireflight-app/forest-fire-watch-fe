@@ -71,22 +71,6 @@ export const GlobalProvider = props => {
     });
   };
 
-  const setGlobalCoordinates = () => {
-    axios
-      .get(
-        `https://api.mapbox.com/geocoding/v5/mapbox.places/${globalState.userLocations[0].address}.json?access_token=${token}`
-      )
-      .then(res => {
-        dispatch({
-          type: SET_COORDS,
-          payload: {
-            latitude: res.data.features[0].center[1],
-            longitude: res.data.features[0].center[0]
-          }
-        });
-      });
-  };
-
   //example location:
   //  {
   //    "user_coords" : [-122.347204, 47.653278],
@@ -155,8 +139,7 @@ export const GlobalProvider = props => {
         setUser,
         setFires,
         setUserLocations,
-        setLastAlert,
-        setGlobalCoordinates
+        setLastAlert
       }}
     >
       {props.children}
