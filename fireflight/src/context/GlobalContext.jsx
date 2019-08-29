@@ -44,18 +44,16 @@ const globalReducer = (state, action) => {
         userLocations: action.payload
       };
     case SET_ALL_COORDS:
-      console.log("payload", action.payload);
-      console.log("payload len", action.payload.length);
 
-      const userLocWithCoords = state.userLocations;
-      action.payload.forEach((location, index)=> {
-        console.log("FOR EACH", action.payload[index])
-      })
-      console.log("userLocWithCoords",userLocWithCoords)
-      for (let i = 0; i < action.payload.length; i++){
-        console.log("I",action.payload[i])
-        // userLocWithCoords[i]
-      }
+      // const userLocWithCoords = state.userLocations;
+      // action.payload.forEach((location, index)=> {
+      //   console.log("FOR EACH", action.payload[index])
+      // })
+      // console.log("userLocWithCoords",userLocWithCoords)
+      // for (let i = 0; i < action.payload.length; i++){
+      //   console.log("I",action.payload[i])
+      //   // userLocWithCoords[i]
+      // }
         return {
           ...state,
           userAllCoordinates: [...state.userAllCoordinates, action.payload]
@@ -68,7 +66,7 @@ const globalReducer = (state, action) => {
 };
 
 export const GlobalProvider = props => {
-  const [globalState, userLocWithCoordsdispatch] = useReducer(globalReducer, defaultValues);
+  const [globalState, dispatch] = useReducer(globalReducer, defaultValues);
 
   const setUser = newUser => {
     dispatch({
@@ -120,22 +118,20 @@ export const GlobalProvider = props => {
   };
 
   const setAllCoordinates = locations => {
-    let coordinates = [];
     locations.forEach(location => {
       axios
         .get(
           `https://api.mapbox.com/geocoding/v5/mapbox.places/${location.address}.json?access_token=${token}`
         )
         .then(res => {
-          const currentCoords = [
+          const coordinates = [
             res.data.features[0].center[1],
             res.data.features[0].center[0]
           ];
-          coordinates.push(currentCoords);
+    dispatch({ type: SET_ALL_COORDS, payload: coordinates });
         });
     });
-    console.log("Coordinates", coordinates)
-    dispatch({ type: SET_ALL_COORDS, payload: coordinates });
+
   };
 
   const setLastAlert = mostRecentAlert => {

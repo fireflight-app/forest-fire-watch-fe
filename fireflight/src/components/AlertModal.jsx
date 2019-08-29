@@ -11,17 +11,18 @@ const AlertModal = ({ showAlerts }) => {
 
   const firesArray = [];
   const setCoords=()=> {
-    console.log("THIS", userLocations)
     setAllCoordinates(userLocations)
   }
 
   const getFireData = () => {
+    console.log("radius", userLocations[0].radius)
     if (userAllCoordinates) {
       console.log("userAllCoordinates", userAllCoordinates);
       let i=0
       for( i; i<userAllCoordinates.length; i++) {
         const location = {"user_coords": userAllCoordinates[i], "distance": userLocations[i].radius}
         console.log("Location", location)
+        setFires(location)
       }
       // const location = {
       //   user_coords: [userCoordinates.latitude, userCoordinates.longitude],
