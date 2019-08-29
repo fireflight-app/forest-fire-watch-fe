@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { MapProvider } from "../context/MapContext";
 
@@ -7,12 +7,15 @@ import AlertModal from "./AlertModal";
 import Map from "./Map";
 
 const Dashboard = () => {
+  const [showAlerts, setShowAlerts] = useState(false);
+
   return (
     <DashboardWrapper>
+      {showAlerts ? <BackDrop onClick={() => setShowAlerts(false)} /> : null}
+      <AlertModal showAlerts={showAlerts} />
       <Heading>Dashboard</Heading>
-      <AlertModal />
       <ContentContainer>
-        <AlertsDiv>
+        <AlertsDiv onClick={() => setShowAlerts(true)}>
           <DivHeading>View Todays Alerts</DivHeading>
         </AlertsDiv>
         <MapDiv>
@@ -103,4 +106,12 @@ const ProfileDiv = styled.div`
   @media (min-width: 900px) {
     order: 3;
   }
+`;
+
+const BackDrop = styled.div`
+  background-color: rgba(48, 49, 48, 0.42);
+  height: 100%;
+  position: fixed;
+  transition: all 1.3s;
+  width: 100%;
 `;
