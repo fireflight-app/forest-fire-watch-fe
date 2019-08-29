@@ -33,6 +33,8 @@ const AlertModal = ({ showAlerts }) => {
   // 3: When we click the Get Fire Locations button, we pass the userCoordinates down and create the location object inside the getFireData function. We then pass location into the setFires function.
   // 4: setFires function grabs all the active fires based on the location info we passed in. That data is passed into fireInfo variable.
 
+  // Still quite buggy. You have to click Get User Locations button twice before you can click the Get Fire Locations button to work correctly. No idea why that is. Feel free to investigate.
+
   return (
     <div>
       <Modal show={showAlerts}>
