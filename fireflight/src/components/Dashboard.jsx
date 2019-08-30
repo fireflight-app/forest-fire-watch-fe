@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import styled from "styled-components";
 import { MapProvider } from "../context/MapContext";
+import { GlobalContext } from "../context/contextProvider";
 
 import AlertModal from "./AlertModal";
 
@@ -8,11 +9,38 @@ import AlertModal from "./AlertModal";
 
 const Dashboard = () => {
   const [showAlerts, setShowAlerts] = useState(false);
+  const {
+    globalState,
+    setFires,
+    setUserLocations,
+    setAllCoordinates,
+    setActiveFires
+  } = useContext(GlobalContext);
+  const { fireInfo, activeFires, userLocations, userAllCoordinates } = globalState;
+
+
+  useEffect(()=> {
+    checkAlerts()
+  }, [])
+//on mounting, this function will check if last_alert on locations table is more than 4 hours ago
+//(****should be refactored to user address context for locations)
+//if so, it will check to see if there are active fires
+//still need to write function to update last_alert, can probably use a put request from addressContext
+  const checkAlerts = ()=> {
+    const currentTime = Date.now()
+    const hour=3600000
+    userLocations.forEach(location=> {
+      if (location.last_alert-currentTime>(4*hour)){
+        setActiveFires()
+      }
+    })
+  }
 
   return (
     <DashboardWrapper>
+      <button onClick={setActiveFires}>Check For Fires</button>
       {showAlerts ? <BackDrop onClick={() => setShowAlerts(false)} /> : null}
-      <AlertModal showAlerts={showAlerts} />
+      <AlertModal showAlerts={activeFires} />
       <Heading>Dashboard</Heading>
       <ContentContainer>
         <AlertsDiv onClick={() => setShowAlerts(true)}>
@@ -115,3 +143,74 @@ const BackDrop = styled.div`
   transition: all 1.3s;
   width: 100%;
 `;
+
+
+
+
+
+
+  // useEffect(()=> {
+  //   checkForFires()
+  // },[userLocations])
+
+  // const checkForFires = () => {
+  //   setUserLocations()
+  //     .then(res => {
+  //       setAllCoordinates()
+  //         .then(res => {
+  //           setFires()
+  //             .then(res => {
+  //               console.log(fireInfo);
+  //             })
+  //             .catch(err => {
+  //               console.log(err);
+  //             });
+  //         })
+  //         .catch(err => {
+  //           console.log(err);
+  //         });
+  //     })
+  //     .catch(err => {
+  //       console.log(err);
+  //     });
+
+  //   // if(userLocations.length>0) {
+  //   // setAllCoordinates(userLocations)
+  //   // }
+  //   // if (userAllCoordinates.length>0) {
+  //   //   // getFireData();
+  //   // }
+  //   console.log("userAllCoordinates", userAllCoordinates);
+  //   console.log(userLocations.length, "HERE");
+  //   console.log(userAllCoordinates.length, "THERE");
+
+    // const activeFires = fireInfo.map(fire => {
+    //   if (fire.Alert) {
+    //     return true;
+    //   }
+    // });
+    // console.log("activeFires", activeFires)
+    // if (activeFires.length>0) {
+    //   setShowAlerts(true);
+    // }
+  //  };
+  // const getFireData = () => {
+  //   // if ( userAllCoordinates.length>0&&useEffect(()=> {
+  //   //   //   checkForFires()
+  //   // },[userLocations])useEffect(()=> {
+  //   //   checkForFires()
+  //   // },[userLocations])userLocations.length>0) {
+  //   console.log("userAllCoordinates", userAllCoordinates);
+  //   let i = 0;
+  //   for (i; i < userLocations.length; i++) {
+  //     console.log(userLocations.length, "HERE");
+  //     console.log(userAllCoordinates.length, "THERE");
+  //     const location = {
+  //       user_coords: userAllCoordinates[i],
+  //       distance: userLocations[i].radius
+  //     };
+  //     console.log("Location", location);
+  //     setFires(location);
+  //     // }
+  //   }
+  // };

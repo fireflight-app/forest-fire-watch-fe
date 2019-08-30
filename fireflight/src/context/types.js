@@ -1,6 +1,7 @@
 export const SET_LOCATION = "SET_LOCATION";
 export const SET_NAME = "SET_NAME";
 export const SET_FIRES = "SET_FIRES"
+export const SET_ACTIVE_FIRES="SET_ACTIVE_FIRES"
 export const SET_USER_LOCATIONS="SET_USER_LOCATIONS";
 export const SET_LAST_ALERT = "SET_LAST_ALERT"
 export const SET_VIEWPORT = "SET_VIEWPORT";

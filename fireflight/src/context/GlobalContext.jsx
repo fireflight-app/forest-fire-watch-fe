@@ -8,6 +8,7 @@ import {
   SET_LOCATION,
   SET_NAME,
   SET_FIRES,
+  SET_ACTIVE_FIRES,
   SET_USER_LOCATIONS,
   SET_LAST_ALERT,
   SET_COORDS,
@@ -33,31 +34,25 @@ const globalReducer = (state, action) => {
         name: action.payload
       };
     case SET_FIRES:
-      //To Ken from Shannon: should add the fire coordinates and alert boolean from the DS (setFires function)to the fireInfo array
       return {
         ...state,
         fireInfo: [...state.fireInfo, action.payload]
       };
+      case SET_ACTIVE_FIRES:
+        return{
+          ...state,
+          activeFires: action.payload
+        }
     case SET_USER_LOCATIONS:
       return {
         ...state,
         userLocations: action.payload
       };
     case SET_ALL_COORDS:
-
-      // const userLocWithCoords = state.userLocations;
-      // action.payload.forEach((location, index)=> {
-      //   console.log("FOR EACH", action.payload[index])
-      // })
-      // console.log("userLocWithCoords",userLocWithCoords)
-      // for (let i = 0; i < action.payload.length; i++){
-      //   console.log("I",action.payload[i])
-      //   // userLocWithCoords[i]
-      // }
-        return {
-          ...state,
-          userAllCoordinates: [...state.userAllCoordinates, action.payload]
-        };
+      return {
+        ...state,
+        userAllCoordinates: [...state.userAllCoordinates, action.payload]
+      };
     default:
       return {
         ...state
@@ -96,21 +91,6 @@ export const GlobalProvider = props => {
       .get("/locations")
       .then(res => {
         dispatch({ type: SET_USER_LOCATIONS, payload: res.data });
-        // res.data.map(location => {
-        //   axios
-        //     .get(
-        //       `https://api.mapbox.com/geocoding/v5/mapbox.places/${location.address}.json?access_token=${token}`
-        //     )
-        //     .then(res => {
-        //       dispatch({
-        //         type: SET_ALL_COORDS,
-        //         payload: [
-        //           res.data.features[0].center[1],
-        //           res.data.features[0].center[0]
-        //         ]
-        //       });
-        //     });
-        // });
       })
       .catch(err => {
         console.log(err);
@@ -128,10 +108,9 @@ export const GlobalProvider = props => {
             res.data.features[0].center[1],
             res.data.features[0].center[0]
           ];
-    dispatch({ type: SET_ALL_COORDS, payload: coordinates });
+          dispatch({ type: SET_ALL_COORDS, payload: coordinates });
         });
     });
-
   };
 
   const setLastAlert = mostRecentAlert => {
@@ -140,6 +119,67 @@ export const GlobalProvider = props => {
       .then(res => {
         console.log(res.data);
         dispatch({ type: SET_LAST_ALERT, payload: res.data });
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+  const setActiveFires = () => {
+    axiosWithAuth()
+      .get("/locations")
+      .then(res1 => {
+        dispatch({ type: SET_USER_LOCATIONS, payload: res1.data });
+        // console.log("Step1", res1.data);
+        const locations = res1.data;
+        let counter = 0;
+        let formattedLocationsAll = [];
+        let allCoordinates = [];
+        let activeFires = [];
+        locations.forEach((location, index) => {
+          axios
+            .get(
+              `https://api.mapbox.com/geocoding/v5/mapbox.places/${location.address}.json?access_token=${token}`
+            )
+            .then(res2 => {
+              const currentCoordinates = [
+                res2.data.features[0].center[1],
+                res2.data.features[0].center[0]
+              ];
+              allCoordinates.push(currentCoordinates);
+              // console.log("step2 currentCoord", currentCoordinates);
+              let formattedLocation = {
+                user_coords: currentCoordinates,
+                distance: locations[counter].radius
+              };
+              counter += 1;
+              formattedLocationsAll = [
+                ...formattedLocationsAll,
+                formattedLocation
+              ];
+              // console.log("formattedLocationsArray", formattedLocationsAll);
+
+              axios
+                .post(`${DSbaseURL}/check_fires`, formattedLocation)
+                .then(res3 => {
+                  // console.log("step3", res3.data);
+                  if (res3.data.Alert === true) {
+                    activeFires.push(res3.data)
+                    dispatch({ type: SET_ACTIVE_FIRES, payload: true });
+                  }
+                  //index corresponds to userLocations array
+                  dispatch({type: SET_FIRES, payload: [index,activeFires]})
+                  // console.log("i+fires", [index,activeFires] )
+                })
+                .catch(err => {
+                  console.log(err);
+                });
+              dispatch({ type: SET_ALL_COORDS, payload: allCoordinates });
+
+            })
+            .catch(err => {
+              console.log(err);
+            });
+        });
       })
       .catch(err => {
         console.log(err);
@@ -155,7 +195,8 @@ export const GlobalProvider = props => {
         setFires,
         setUserLocations,
         setAllCoordinates,
-        setLastAlert
+        setLastAlert,
+        setActiveFires
       }}
     >
       {props.children}

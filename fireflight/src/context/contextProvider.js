@@ -5,7 +5,7 @@ const defaultValues = {
   user: null,
   remote: remote,
   fireInfo: [],
-  activeFireInfo:[],
+  activeFires: false,
   userLocations: [],
   userCoordinates: {},
   userAllCoordinates:[]
