@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
 import Navigation from "./components/Navigation";
+import Header from "./components/Header";
 import Home from "./components/Home";
 import Danger from "./components/Danger";
 import Update from "./components/Update";
@@ -106,7 +107,8 @@ function App() {
           toggleRegisterStatus={setRegisterFormStatus}
         />
 
-        <Route path="/dashboard" component={Dashboard} />
+        <Route path="address" component={Header} />
+
 
         <Route
           exact
@@ -122,6 +124,7 @@ function App() {
         <Route path="/update" component={Update} />
 
         <Route path="/danger" component={Danger} />
+        <Route exact path="/header_test" component={Header} />
 
         <Route
           path="/home"
